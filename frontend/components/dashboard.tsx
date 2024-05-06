@@ -40,8 +40,19 @@ export function DashboardComponent() {
           className="mt-4"
           disabled={question.length == 0 || uppy.getState().uploading}
           onClick={() => {
-            console.log('Uploading...');
-            uppy.upload();
+            console.log('Uploading Question...');
+            fetch('http://127.0.0.1:8000/question/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ ques: question }),
+            })
+              .then(res => res.json())
+              .then(data => {
+                console.log(data);
+                uppy.upload();
+              })
           }}
         >
           Process
@@ -60,6 +71,7 @@ export function DashboardComponent() {
             placeholder="Ask about your PDF"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            disabled={uppy.getState().uploading}
           />
         </div>
       </div>
