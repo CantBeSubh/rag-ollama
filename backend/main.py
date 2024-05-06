@@ -20,9 +20,10 @@ from langchain_community.document_loaders import PyPDFLoader
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel
+import pprint
 
 
-global question
+question = ""
 
 
 class GraphState(TypedDict):
@@ -151,6 +152,7 @@ async def question(req: Question):
     if ques == "":
         raise HTTPException(status_code=400, detail="No question was provided.")
     try:
+        global question
         question = ques
         return {"status": "success", "question": question}
     except Exception as e:
@@ -425,7 +427,8 @@ async def upload_files(files: List[UploadFile] = File(...)):
             # Node
             print(f"Node '{key}':")
             # Optional: print full state at each node
-            pprint.pprint(value["keys"], indent=2, width=80, depth=None)
+            # print(value)
+            pprint.pprint(value, indent=2, width=80, depth=None)
         print("\n---\n")
     # Final generation
     print("FINAL OUTPUT: ", value["generation"])

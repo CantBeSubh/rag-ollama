@@ -16,15 +16,21 @@ import '@uppy/dashboard/dist/style.min.css';
 
 export function DashboardComponent() {
   const [question, setQuestion] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState('');
   const [uppy] = useState(() => new Uppy({
     restrictions: { allowedFileTypes: ['application/pdf'] },
-
   })
     .use(XHR, {
       endpoint: 'http://127.0.0.1:8000/upload/',
       bundle: true,
       formData: true,
       fieldName: 'files',
+    })
+    .on('complete', (result) => {
+      setLoading(false);
+      console.log(result);
+      setResponse("DONE");
     })
   )
 
@@ -38,9 +44,10 @@ export function DashboardComponent() {
         />
         <Button
           className="mt-4"
-          disabled={question.length == 0 || uppy.getState().uploading}
+          disabled={question.length == 0 || loading}
           onClick={() => {
             console.log('Uploading Question...');
+            setLoading(true);
             fetch('http://127.0.0.1:8000/question/', {
               method: 'POST',
               headers: {
@@ -71,9 +78,14 @@ export function DashboardComponent() {
             placeholder="Ask about your PDF"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            disabled={uppy.getState().uploading}
+            disabled={loading}
           />
         </div>
+        {response &&
+          <div className="w-full p-4 border border-white rounded-lg">
+            {response}
+          </div>
+        }
       </div>
     </div>
   )
