@@ -1,10 +1,14 @@
 # RagOllama - Adaptive RAG Chatbot
-This Adaptive RAG Agent webapp will uses LLM to answer questions about a PDF document. The app uses a graph-based approach to answer questions. The graph is built using LangGraph. 
+![YOUTUBE VIDEO HERE]()
+
+_This Adaptive RAG Agent webapp will uses LLM to answer questions about a PDF document. The app uses a graph-based approach to answer questions. The graph is built using LangGraph._
+![Rag Ollama Architecture](https://github.com/CantBeSubh/rag-ollama/blob/main/Rag%20Ollama.png?raw=true)
+![CleanShot 2024-05-06 at 22 05 31@2x](https://github.com/CantBeSubh/rag-ollama/assets/83113185/bb5af511-5183-4dde-ac97-cbb43fef421d)
 
 The RAG technique is used is called Adaptive RAG. Why is this called Adaptive?
-1. Routing: Route questions to different retrieval approaches
-2. Fallback:  Fallback to web search if docs are not relevant to query
-3. Self-correction: Fix answers w/ hallucinations or don’t address question
+1. **Routing**: Route questions to different retrieval approaches
+2. **Fallback**:  Fallback to web search if docs are not relevant to query
+3. **Self-correction**: Fix answers w/ hallucinations or don’t address question
 
 ## Tech Stack
 This monorepo has a frontend and backend. The following are the technologies used in this project:-
