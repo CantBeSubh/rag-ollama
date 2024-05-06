@@ -29,6 +29,7 @@ question = ""
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 os.environ["LANGCHAIN_API_KEY"] = "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"
+os.environ["LANGCHAIN_PROJECT"] = "Rag Ollama"
 
 
 class GraphState(TypedDict):
