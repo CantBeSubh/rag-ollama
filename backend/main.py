@@ -18,6 +18,10 @@ app.add_middleware(
 
 @app.post("/upload/")
 async def upload_files(files: List[UploadFile] = File(...)):
+    # Raise an error if no files were uploaded
+    if not files:
+        raise HTTPException(status_code=400, detail="No files were uploaded.")
+
     results = []
     for file in files:
         contents = await file.read()  # Read the contents of the uploaded file
