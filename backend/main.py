@@ -1,7 +1,9 @@
+# Libraries for hosting the server
 from fastapi import FastAPI, UploadFile, File, Header
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
+# Librarires for RAG Agent
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import GPT4AllEmbeddings
@@ -25,7 +27,7 @@ import pprint
 
 question = ""
 
-### Tracing
+### TRACING(optional) ###
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 os.environ["LANGCHAIN_API_KEY"] = "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"
@@ -35,7 +37,6 @@ os.environ["LANGCHAIN_PROJECT"] = "Rag Ollama"
 class GraphState(TypedDict):
     """
     Represents the state of our graph.
-
     Attributes:
         question: question
         generation: LLM generation
@@ -48,12 +49,13 @@ class GraphState(TypedDict):
 
 
 load_dotenv()
-
+# LLM Model in use, replace with your own model (eg: phi3, mixtral etc)
 local_llm = "llama3"
+# Tavily API Key, generate one here https://app.tavily.com/
 tavily_api_key = os.getenv("TAVILY_API_KEY")
 web_search_tool = TavilySearchResults(k=3, tavily_api_key=tavily_api_key)
 
-app = FastAPI()
+app = FastAPI()  # Create a FastAPI Server Instance
 
 # Add middleware to enable CORS
 app.add_middleware(
@@ -66,17 +68,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+# Text Splitter, using OpenAI's TikTokenizer
 text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
     chunk_size=250, chunk_overlap=0
 )
+# Temporary Directory for storing PDFs
 temp_dir = os.path.join(os.getcwd(), "temp")
+# If the directory does not exist, create it
 if not os.path.exists(temp_dir):
     os.makedirs(temp_dir)
 
 llm = ChatOllama(model=local_llm, temperature=0)
 llm_json = ChatOllama(model=local_llm, format="json", temperature=0)
 
+## QUESTION ROUTER - decides wheather to use web search or local documents.
 prompt = PromptTemplate(
     template="""<|begin_of_text|><|start_header_id|>system<|end_header_id|>You are an expert at routing a user question to a vectorstore or web search. \n
         Use the vectorstore for questions related to a software enginner's Resume like skills, years of experience, and education. \n
@@ -89,6 +94,8 @@ prompt = PromptTemplate(
 
 question_router = prompt | llm_json | JsonOutputParser()
 
+
+## RETRIVAL GRADER - determines whether the retrieved documents are relevant to the question.
 prompt = PromptTemplate(
     template="""<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a grader assessing relevance 
     of a retrieved document to a user question. If the document contains keywords related to the user question, 
@@ -104,10 +111,12 @@ prompt = PromptTemplate(
 
 retrieval_grader = prompt | llm_json | JsonOutputParser()
 
+## RAG CHAIN - generates an answer to a question using the retrieved documents.
 prompt = hub.pull("rlm/rag-prompt")
-
 rag_chain = prompt | llm | StrOutputParser()
 
+
+## HALLUCINATION GRADER - determines whether the generated answer is grounded in the retrieved documents.
 prompt = PromptTemplate(
     template=""" <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a grader assessing whether 
     an answer is grounded in / supported by a set of facts. Give a binary 'yes' or 'no' score to indicate 
@@ -122,7 +131,7 @@ prompt = PromptTemplate(
 )
 hallucination_grader = prompt | llm_json | JsonOutputParser()
 
-# Prompt
+# ANSWER GRADER - determines whether the generated answer is useful to resolve the question.
 prompt = PromptTemplate(
     template="""<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a grader assessing whether an 
     answer is useful to resolve a question. Give a binary score 'yes' or 'no' to indicate whether the answer is 
@@ -137,6 +146,7 @@ prompt = PromptTemplate(
 
 answer_grader = prompt | llm_json | JsonOutputParser()
 
+# QUESTION REWRITER - transforms the question to produce a better,standalone question.
 prompt = PromptTemplate(
     template="""<|begin_of_text|><|start_header_id|>system<|end_header_id|> You a question re-writer that converts an input question to a better version that is optimized \n 
     for vectorstore retrieval. Look at the initial and formulate an improved question. \n
@@ -152,6 +162,10 @@ class Question(BaseModel):
     ques: str
 
 
+# Two diffrent enp points because in a real-world scenario, you would cache response to a question, so we can re-use it.
+
+
+# This end-point is used to store the question
 @app.post("/question/")
 async def question(req: Question):
     ques = req.ques
@@ -165,6 +179,7 @@ async def question(req: Question):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# This end-point is used to upload the PDF files
 @app.post("/upload/")
 async def upload_files(files: List[UploadFile] = File(...)):
     print("QUESTION", question)
@@ -172,11 +187,9 @@ async def upload_files(files: List[UploadFile] = File(...)):
     if not files:
         raise HTTPException(status_code=400, detail="No files were uploaded.")
 
-    # Extract the question headers
-
     docs = []
 
-    # MARK: LOAD PDF FILES
+    # Load PDF Files with PyPDFLoader
     for file in files:
         contents = await file.read()
         temp_file_path = os.path.join(temp_dir, file.filename)
@@ -194,6 +207,7 @@ async def upload_files(files: List[UploadFile] = File(...)):
             os.remove(temp_file_path)
 
     text_chunks = text_splitter.split_documents(docs)
+    # Add them to Chroma vectorstore
     vectorstore = Chroma.from_documents(
         documents=text_chunks,
         collection_name="rag-chroma",
@@ -201,6 +215,7 @@ async def upload_files(files: List[UploadFile] = File(...)):
     )
     retriever = vectorstore.as_retriever()
 
+    ### VARIOUS HELPER FUNCTIONS ###
     def retrieve(state):
         """
         Retrieve documents

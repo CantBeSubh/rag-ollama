@@ -1,0 +1,13 @@
+fastapi
+langchain
+langchain_community
+langchain_core
+langgraph
+pydantic
+python-dotenv
+typing_extensions
+pypdf
+gpt4all
+chromadb
+langchainhub
+watchdog
