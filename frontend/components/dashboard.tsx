@@ -11,6 +11,7 @@ import { Dashboard } from '@uppy/react';
 import XHR from '@uppy/xhr-upload';
 import { useState } from "react";
 
+import { UserButton } from "@clerk/nextjs";
 import '@uppy/core/dist/style.min.css';
 import '@uppy/dashboard/dist/style.min.css';
 import toast from "react-hot-toast";
@@ -39,6 +40,9 @@ export function DashboardComponent() {
 
   return (
     <div className="flex h-screen bg-[#18181b] text-white">
+      <div className="absolute top-0 right-0 p-2">
+        <UserButton />
+      </div>
       <div className="flex flex-col w-[300px] border-r border-gray-800 p-4">
         <Dashboard
           uppy={uppy}
@@ -70,6 +74,7 @@ export function DashboardComponent() {
         >
           Process
         </Button>
+
       </div>
       <div className="flex-1 p-4">
         <div className="flex justify-between pb-4">
