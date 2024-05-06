@@ -5,6 +5,9 @@ _This Adaptive RAG Agent webapp will uses LLM to answer questions about a PDF do
 ![Rag Ollama Architecture](https://github.com/CantBeSubh/rag-ollama/blob/main/Rag%20Ollama.png?raw=true)
 ![UI](https://github.com/CantBeSubh/rag-ollama/assets/83113185/bb5af511-5183-4dde-ac97-cbb43fef421d)
 
+- [Langsmith Trace log for retrival](https://smith.langchain.com/public/8a9e2a91-94bc-4bac-ab8a-63f5b2ea046c/r)
+- [Langsmith Trace log for web_search](https://smith.langchain.com/public/5e01d27d-c218-4507-b46d-6e95302ae0d0/r)
+
 The RAG technique is used is called Adaptive RAG. Why is this called Adaptive?
 1. **Routing**: Route questions to different retrieval approaches
 2. **Fallback**:  Fallback to web search if docs are not relevant to query
