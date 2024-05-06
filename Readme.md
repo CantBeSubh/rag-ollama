@@ -1,5 +1,5 @@
 # RagOllama - Adaptive RAG Chatbot
-![YOUTUBE VIDEO HERE]()
+## [YT VIDEO DEMO HERE](https://youtu.be/_lw3qa5kXpY?si=rEzH-PFExyMfv4dk)
 
 _RAG Ollama is an Adaptive RAG Agent web app that uses LLM to answer questions about a PDF document. The app uses a graph-based approach to answer questions. The graph is built using LangGraph._
 ![Rag Ollama Architecture](https://github.com/CantBeSubh/rag-ollama/blob/main/Rag%20Ollama.png?raw=true)
