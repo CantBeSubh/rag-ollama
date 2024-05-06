@@ -13,6 +13,8 @@ import { useState } from "react";
 
 import '@uppy/core/dist/style.min.css';
 import '@uppy/dashboard/dist/style.min.css';
+import toast from "react-hot-toast";
+import Markdown from "react-markdown";
 
 export function DashboardComponent() {
   const [question, setQuestion] = useState('');
@@ -29,8 +31,9 @@ export function DashboardComponent() {
     })
     .on('complete', (result) => {
       setLoading(false);
-      console.log(result);
-      setResponse("DONE");
+      console.log(result.successful.map(item => item.response?.body));
+      toast.success('Question Processed');
+      setResponse(result.successful.map(item => item.response?.body).join('\n'));
     })
   )
 
@@ -46,7 +49,6 @@ export function DashboardComponent() {
           className="mt-4"
           disabled={question.length == 0 || loading}
           onClick={() => {
-            console.log('Uploading Question...');
             setLoading(true);
             fetch('http://127.0.0.1:8000/question/', {
               method: 'POST',
@@ -60,6 +62,10 @@ export function DashboardComponent() {
                 console.log(data);
                 uppy.upload();
               })
+              .catch(err => {
+                console.log(err);
+                toast.error('Error Uploading Question');
+              });
           }}
         >
           Process
@@ -83,7 +89,7 @@ export function DashboardComponent() {
         </div>
         {response &&
           <div className="w-full p-4 border border-white rounded-lg">
-            {response}
+            <Markdown>{response}</Markdown>
           </div>
         }
       </div>

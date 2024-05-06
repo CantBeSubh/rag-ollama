@@ -73,7 +73,7 @@ llm_json = ChatOllama(model=local_llm, format="json", temperature=0)
 
 prompt = PromptTemplate(
     template="""<|begin_of_text|><|start_header_id|>system<|end_header_id|>You are an expert at routing a user question to a vectorstore or web search. \n
-        Use the vectorstore for questions on Workout Routines, lower body workouts, upper body workouts, and cardio workouts. \n
+        Use the vectorstore for questions related to a software enginner's Resume like skills, years of experience, and education. \n
         You do not need to be stringent with the keywords in the question related to these topics. \n
         Otherwise, use web-search. Give a binary choice 'web_search' or 'vectorstore' based on the question. \n
         Return the a JSON with a single key 'datasource' and no premable or explaination. \n
@@ -426,9 +426,6 @@ async def upload_files(files: List[UploadFile] = File(...)):
         for key, value in output.items():
             # Node
             print(f"Node '{key}':")
-            # Optional: print full state at each node
-            # print(value)
-            pprint.pprint(value, indent=2, width=80, depth=None)
         print("\n---\n")
     # Final generation
     print("FINAL OUTPUT: ", value["generation"])
