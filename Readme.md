@@ -3,7 +3,7 @@
 
 _This Adaptive RAG Agent webapp will uses LLM to answer questions about a PDF document. The app uses a graph-based approach to answer questions. The graph is built using LangGraph._
 ![Rag Ollama Architecture](https://github.com/CantBeSubh/rag-ollama/blob/main/Rag%20Ollama.png?raw=true)
-![CleanShot 2024-05-06 at 22 05 31@2x](https://github.com/CantBeSubh/rag-ollama/assets/83113185/bb5af511-5183-4dde-ac97-cbb43fef421d)
+![UI](https://github.com/CantBeSubh/rag-ollama/assets/83113185/bb5af511-5183-4dde-ac97-cbb43fef421d)
 
 The RAG technique is used is called Adaptive RAG. Why is this called Adaptive?
 1. **Routing**: Route questions to different retrieval approaches
@@ -16,18 +16,18 @@ This monorepo has a frontend and backend. The following are the technologies use
 ### Frontend
 - [Next.js](https://nextjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Shadcn UI](https://www.shadcn.com/ui)
+- [Shadcn UI](https://ui.shadcn.com/)
 - [Clerk](https://clerk.dev/)
 
 ### Backend
-- [Ollama](https://github.com/facebookresearch/llama)
-- [Lamma3](https://github.com/facebookresearch/llama/tree/main/llama3)
-- [LangChain](https://github.com/hwchase17/langchain)
-- [LangChain Community](https://github.com/hwchase17/langchain/tree/main/community)
-- [LangGraph](https://github.com/hwchase17/langchain/tree/main/community/langgraph)
-- [LangSmith](https://github.com/hwchase17/langchain/tree/main/community/langsmith)
+- [Ollama](https://ollama.com/)
+- [Lamma3](https://llama.meta.com/llama3/)
+- [LangChain](https://www.langchain.com/)
+- [LangChain Community](https://pypi.org/project/langchain-community/)
+- [LangGraph](https://blog.langchain.dev/langgraph/)
+- [LangSmith](https://smith.langchain.com/)
 - [Chroma DB](https://www.trychroma.com/)
-- [PyPDFLoader](https://github.com/pypdf/PyPDF2)
+- [PyPDFLoader](https://python.langchain.com/docs/modules/data_connection/document_loaders/pdf/)
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [Uppy](https://uppy.io/)
 
@@ -35,7 +35,7 @@ This monorepo has a frontend and backend. The following are the technologies use
 ### Prerequisites
 - Python 3.10+
 - Node.js 18+
-- Ollama (with suitable LLM model installed, in my case I used [llama3:8B](https://github.com/facebookresearch/llama/tree/main/llama3))
+- Ollama (with suitable LLM model installed, in my case I used [llama3:8B](https://llama.meta.com/llama3/))
 - Tavily API Key (for web search)
 - LangSmith API Key (optional, for tracing)
 
